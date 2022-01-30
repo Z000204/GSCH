@@ -5,7 +5,7 @@ from torch.nn import init
 
 
 
-class ParallelPolarizedSelfAttention(nn.Module):
+class CrossModalAttention(nn.Module):
 
     def __init__(self, channel=512):
         super().__init__()
