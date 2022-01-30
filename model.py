@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchvision
 from torch.nn import Parameter
-from attention.PolarizedSelfAttention import SequentialPolarizedSelfAttention 
+from attention.CrossModalAttention import CrossModalfAttention 
 from attention.SelfAttention import ScaledDotProductAttention
 from model.vit import image_net
 from pytorch_transformers import BertModel
