@@ -31,23 +31,16 @@ class ImgTextNet(nn.Module):
         self.fc8 = nn.Linear(2 * image_size, image_size)
         self.fc9 = nn.Linear(2 * code_len, code_len)
         self.fc = nn.Linear(2 * txt_feat_len, txt_feat_len)
-        self.attention = SequentialPolarizedSelfAttention(channel=512)
-        self.sattention = ScaledDotProductAttention(d_model=1024, d_k=1024, d_v=1024, h=8)
+        self.attention = CrossModalAttention(channel=512)
+       
         self.avg = nn.AdaptiveAvgPool2d((1, 1))
-        # new add
-        # self.attention = SpatialGroupEnhance(groups=8)
 
 
     def forward(self, x, y):
         x = self.image_net(x)
         feat = x.view(x.size(0), -1)
         imgfeat = feat
-        # hid = self.fc_encode(feat)
-        # code = torch.tanh(self.alpha * hid)
-        # code_s = torch.sign(code)
-        # # decoded = self.decode(code_s)
-        # ConvTrans2d = nn.ConvTranspose2d()
-        # ConvTrans1d = nn.ConvTranspose1d()
+     
         txtfeat1 = self.fc1(y)
         txtfeat = F.relu(txtfeat1)
 
@@ -121,17 +114,6 @@ class ImgTextNet(nn.Module):
 
     def set_alpha(self, epoch):
         self.alpha = math.pow((1.0 * epoch + 1.0), 0.5)
-
-
-    def forward(self, x):
-        feat1 = self.fc1(x)
-        feat = F.relu(feat1)
-        hid = self.fc2(feat)
-
-        code = torch.tanh(self.alpha * hid)
-        code_s = torch.sign(code)
-        decoded = self.decode(code_s)
-        return feat, hid, code, decoded
 
     def set_alpha(self, epoch):
         self.alpha = math.pow((1.0 * epoch + 1.0), 0.5)
